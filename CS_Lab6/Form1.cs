@@ -26,6 +26,7 @@ namespace CS_Lab6
         Brush subtitle_brush;
         PointF subtitle_pen;
         Color subtitle_color;
+        Point hh;
 
         //Table data
         string yearStr;
