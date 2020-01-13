@@ -26,7 +26,6 @@ namespace CS_Lab6
         Brush subtitle_brush;
         PointF subtitle_pen;
         Color subtitle_color;
-        Point hh;
 
         //Table data
         string yearStr;
@@ -121,7 +120,6 @@ namespace CS_Lab6
             graph_fontLarge = new Font("Arial", 14, FontStyle.Bold);
             graph_brush = new SolidBrush(graphLine_colors);
 
-
             //Graph bar chart (Rectangle)
             barChart_rectangles = new Rectangle[years.Length];
             barChart_color = Color.Blue;
@@ -130,52 +128,52 @@ namespace CS_Lab6
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            DisplayText();
-            DisplayTableData();
-            DisplayLine();
-            DisplayRectangle();
-            DisplayGLine();
-            DrawGraph();
-            GraphText();
-            DisplayBarChartRectangle();
-            DisplayGLine();
-            DrawGraph();
+            //Title Subtitle and Table
+            DisplayTitle();       //to display title and subtitle on the middle of the top
+            DisplayTableData();   //to display the years and revenue data on the right side
+            DisplayTableLines();  //to display table horizontal lines
+            DisplayRectangle();   //to display table boundry
+
+            //Graph
+            FillGraphDataArray();       //to fill the years and revenue in an array of points as x,y values
+            GraphText();                //to dispaly years and revenue words on the (x and y) axes
+            DisplayBarChartRectangle(); //to display the graph as a bar chart 
+            DisplayGraphLine();         //display all the lines of the graph x-axis and y-axis
+            DrawGraph();                //connect the graph points from the points array
         }
-        public void DisplayText()
+        public void DisplayTitle()
         {
             //Display Title and Subtitle (company and revenue)
             Graphics g = this.CreateGraphics();
             g.Clear(this.BackColor);
-            var screen_comp = (this.Width - g.MeasureString(title, title_font).Width)/2;
-            var screen_rev = (this.Width - g.MeasureString(subtitle, subtitle_font).Width) / 2;
+            var title_X_Axis = (this.Width - g.MeasureString(title, title_font).Width)/2;
+            var subitle_X_Axis = (this.Width - g.MeasureString(subtitle, subtitle_font).Width) / 2;
 
-            title_pen = new PointF(screen_comp, 20);
-            subtitle_pen = new PointF(screen_rev, 60);
+            title_pen = new PointF(title_X_Axis, 20);
+            subtitle_pen = new PointF(subitle_X_Axis, 60);
             
             g.DrawString(title, title_font, title_brush, title_pen);
             g.DrawString(subtitle, subtitle_font, subtitle_brush, subtitle_pen);
-            
-            
         }
 
         public void DisplayTableData()
         {
             //Display data in table (Year and revenue)
             Graphics g = this.CreateGraphics();
-            var screen_table1 = 1090;
-            var screen_table2 = screen_table1 + 130;
+            var X_axisForYears = 1090;
+            var X_axisForRevenue = X_axisForYears + 130;
             int h = 150;
 
-            table_point1 = new PointF(screen_table1, h);
-            table_point2 = new PointF(screen_table2 - 20, h);
+            table_point1 = new PointF(X_axisForYears, h);
+            table_point2 = new PointF(X_axisForRevenue - 20, h);
             g.DrawString(yearStr, table_font, table_brush, table_point1);
             g.DrawString(revenueStr, table_font, table_brush, table_point2);
 
             for (int i = 0; i < years.Length; i++)
             {
                 h += 50;
-                table_point1 = new PointF(screen_table1, h);
-                table_point2 = new PointF(screen_table2, h);
+                table_point1 = new PointF(X_axisForYears, h);
+                table_point2 = new PointF(X_axisForRevenue, h);
 
                 string strYear = years[i].ToString();
                 g.DrawString(strYear, table_font, table_brush, table_point1);
@@ -184,22 +182,21 @@ namespace CS_Lab6
                 g.DrawString(strRevenue, table_font, table_brush, table_point2);
             }
         }
-        public void DisplayLine()
-        {
+        public void DisplayTableLines()
+        {//tableLineStart
             //Display table lines
-            Graphics ge = this.CreateGraphics();
-            var p1_tableLine = 1050;
-            var p2_tableLine = p1_tableLine + 250;
+            Graphics g = this.CreateGraphics();
+            var startHorizontalLine = 1050;
+            var endtHorizontalLine = startHorizontalLine + 250;
 
             int h = 140;
             for (int i = 0; i < years.Length+1; i++)
             {
                 h += 50;
-                table_point1 = new PointF(p1_tableLine, h);
-                table_point2 = new PointF(p2_tableLine, h);
-                ge.DrawLine(tableLine_pen, table_point1, table_point2);
+                table_point1 = new PointF(startHorizontalLine, h);
+                table_point2 = new PointF(endtHorizontalLine, h);
+                g.DrawLine(tableLine_pen, table_point1, table_point2);
             }
-            table_height = 50 * (years.Length + 1);
         }
 
         public new void DisplayRectangle()
@@ -207,13 +204,14 @@ namespace CS_Lab6
             //Display table frame (rectangle)
             Graphics g = CreateGraphics();
             var p1_tableLine = 1050;
+            table_height = 50 * (years.Length + 1);
             rectangle1 = new Rectangle(p1_tableLine,140, 250, table_height);
             rectangle2 = new Rectangle(p1_tableLine, 140, 125, table_height);
             g.DrawRectangle(rectangle_pen, rectangle1);
             g.DrawRectangle(rectangle_pen, rectangle2);
         }
 
-        public void DisplayGLine()
+        public void DisplayGraphLine()
         {
             //Draw graph horizontal and verticle long lines
             Graphics g = this.CreateGraphics();
@@ -223,46 +221,48 @@ namespace CS_Lab6
             g.DrawLine(tableLongLine_pen, graph_point1, graph_point2);
             g.DrawLine(tableLongLine_pen, graph_point1, graph_point3);
 
-
-            int h = 640;
-            int revNum = 0;
-            //int v = 40;
+            int origin_Y = 640;
+            int revenueValues = 0;
             for (int i = 0; i < (years.Length); i++)
             {
-                h -= 40;
-                revNum += 35;
+                origin_Y -= 40;
+                revenueValues += 35;
                 //Vertical small lines
-                table_point1 = new PointF(195, h);
-                table_point2 = new PointF(205, h);
+                table_point1 = new PointF(195, origin_Y);
+                table_point2 = new PointF(205, origin_Y);
                 g.DrawLine(tableLine_pen, table_point1, table_point2);
 
                 //Horizontal small lines
-                table_point1 = new PointF(h, 635);
-                table_point2 = new PointF(h, 645);
+                table_point1 = new PointF(origin_Y, 635);
+                table_point2 = new PointF(origin_Y, 645);
                 g.DrawLine(tableLine_pen, table_point1, table_point2);
 
-                int m = h - 10;
-                int n = h - 15;
-                //Horizontal Vertical years and revenue
-                subTitleStr_point1 = new PointF(160, m);
-                subTitleStr_point2 = new PointF(n, 655);
-                revGraph = revNum.ToString();
+                int revenue_Y = origin_Y - 10;
+                int Year_X = origin_Y - 15;
+                //Horizontal & Vertical (years and revenue) words
+                subTitleStr_point1 = new PointF(160, revenue_Y);
+                subTitleStr_point2 = new PointF(Year_X, 655);
+                revGraph = revenueValues.ToString();
                 yearGraph = years[years.Length-1-i].ToString();
                 g.DrawString(revGraph, graph_fontSmall, graph_brush, subTitleStr_point1);
                 g.DrawString(yearGraph, graph_fontSmall, graph_brush, subTitleStr_point2);
             }
         }
-        public void DrawGraph()
+
+        public void FillGraphDataArray()
         {
-            int xAxis = 0;
+            int x_axis = 0;
             //fill the graph array with points
             for (int i = 0; i < years.Length; i++)
             {
-                xAxis += 40;
-                GraphData_pointArray[i].X = 200 + xAxis;
+                x_axis += 40;
+                GraphData_pointArray[i].X = 200 + x_axis;
                 GraphData_pointArray[i].Y = 600 - (int)(revenue[i]);
             }
+        }
 
+        public void DrawGraph()
+        {
             //draw the graph connected points
             Graphics g = this.CreateGraphics();
             g.DrawLines(graphLine_pen, GraphData_pointArray);
@@ -280,7 +280,6 @@ namespace CS_Lab6
             //Display barchart frame (rectangle)
             Graphics g = CreateGraphics();
             Point[] startPoint = new Point[years.Length];
-
 
             for (int i = 0; i < years.Length; i++)
             {
@@ -301,11 +300,10 @@ namespace CS_Lab6
                 }
 
                 HatchStyle barHatch = HatchStyle.BackwardDiagonal;
-                Brush br = new HatchBrush(barHatch, ChangeColor, ChangeColor);
+                Brush graph2ndBrush = new HatchBrush(barHatch, ChangeColor, ChangeColor);
                 barChart_rectangles[i] = new Rectangle(startPoint[i].X, startPoint[i].Y, 35, barHeight);
                 //g.DrawRectangle(barChart_pen, barChart_rectangles[i]);
-                g.FillRectangle(br, barChart_rectangles[i]);
-
+                g.FillRectangle(graph2ndBrush, barChart_rectangles[i]);
             }
         }
         protected override void OnKeyPress(KeyPressEventArgs e)
@@ -313,18 +311,18 @@ namespace CS_Lab6
             //Change the graph line colors win pressing (shift + B) or (shift + G) or (shift + R)
             switch ((int)e.KeyChar)
             {
-                case 2: //Blue
+                case 2: //B char
                     graphLine_color = Color.Blue;
                     break;
-                case 7: //Green
+                case 7: //G char
                     graphLine_color = Color.Green;
                     break;
-                case 18: //Red
+                case 18: //R char
                     graphLine_color = Color.Red;
                     break;
             }
-            Pen gColor = new Pen(graphLine_color, 3);
-            graphLine_pen = gColor;
+            Pen graph2ndColor = new Pen(graphLine_color, 3);
+            graphLine_pen = graph2ndColor;
             Invalidate();
         }
     }
