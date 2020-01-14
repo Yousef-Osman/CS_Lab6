@@ -113,16 +113,16 @@ namespace CS_Lab6
             GraphData_pointArray = new Point[years.Length];
             graphLine_colors = Color.Blue;
             graphLines_pen = new Pen(graphLine_colors, 2);
-            graphLine_color = Color.FromArgb(34, 65, 86);
+            graphLine_color = Color.Blue;
             graphLine_pen = new Pen(graphLine_color, 3);
             graph_brush = new SolidBrush(graphLine_colors);
-            graph_fontSmall = new Font("Arial", 10, FontStyle.Regular);
+            graph_fontSmall = new Font("Arial", 10, FontStyle.Bold);
             graph_fontLarge = new Font("Arial", 14, FontStyle.Bold);
             graph_brush = new SolidBrush(graphLine_colors);
 
             //Graph bar chart (Rectangle)
             barChart_rectangles = new Rectangle[years.Length];
-            barChart_color = Color.Blue;
+            barChart_color = Color.Red;
             barChart_pen = new Pen(barChart_color, 2);
         }
 
@@ -283,26 +283,14 @@ namespace CS_Lab6
 
             for (int i = 0; i < years.Length; i++)
             {
-                startPoint[i].X = GraphData_pointArray[i].X - 20;
+                startPoint[i].X = GraphData_pointArray[i].X - 15;
                 startPoint[i].Y = GraphData_pointArray[i].Y;
                 int barHeight = 640 - startPoint[i].Y;
-                int check = i % 2;
-                Color ChangeColor = Color.Beige;
 
-                switch (check)
-                {
-                    case (0):
-                        ChangeColor = Color.FromArgb(242, 108, 82);
-                        break;
-                    case (1):
-                        ChangeColor = Color.FromArgb(0, 110, 185);
-                        break;
-                }
-
-                HatchStyle barHatch = HatchStyle.BackwardDiagonal;
-                Brush graph2ndBrush = new HatchBrush(barHatch, ChangeColor, ChangeColor);
-                barChart_rectangles[i] = new Rectangle(startPoint[i].X, startPoint[i].Y, 35, barHeight);
-                //g.DrawRectangle(barChart_pen, barChart_rectangles[i]);
+                HatchStyle barHatch = HatchStyle.ForwardDiagonal;
+                Brush graph2ndBrush = new HatchBrush(barHatch, Color.Aqua, Color.Red);
+                barChart_rectangles[i] = new Rectangle(startPoint[i].X, startPoint[i].Y, 30, barHeight);
+                g.DrawRectangle(barChart_pen, barChart_rectangles[i]);
                 g.FillRectangle(graph2ndBrush, barChart_rectangles[i]);
             }
         }
