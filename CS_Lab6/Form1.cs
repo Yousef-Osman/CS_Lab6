@@ -33,10 +33,12 @@ namespace CS_Lab6
         int[] years;
         int[] revenue;
         Font table_font;
+        Font table_head_font;
         Brush table_brush;
+        Brush table_head_brush;
         PointF table_point1;
         PointF table_point2;
-        Color table_color;
+        Color table_head_color;
 
         //Table Lines
         Pen tableLine_pen;
@@ -81,15 +83,15 @@ namespace CS_Lab6
             InitializeComponent();
 
             //Title (company)
-            title = "ABC Company";
-            title_font = new Font("Arial", 20, FontStyle.Underline);
-            title_color = System.Drawing.Color.Blue;
+            title = "ABC COMPANY";
+            title_font = new Font("Poppens", 20, FontStyle.Underline);
+            title_color = System.Drawing.Color.DarkBlue;
             title_brush = new SolidBrush(title_color);
 
             //subtitle (revenue)
             subtitle = "Annual Revenue";
-            subtitle_font = new Font("Arial", 16, FontStyle.Underline);
-            subtitle_color = System.Drawing.Color.DarkBlue;
+            subtitle_font = new Font("Poppens", 16, FontStyle.Underline);
+            subtitle_color = System.Drawing.Color.Blue;
             subtitle_brush = new SolidBrush(subtitle_color);
 
             //Table Data
@@ -98,8 +100,10 @@ namespace CS_Lab6
             years = new int[]{ 1988,1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997};
             revenue = new int[] { 150, 170, 180, 175, 200, 250, 210, 240, 280, 140 };
             table_font = new Font("Arial", 12, FontStyle.Bold);
-            table_color = System.Drawing.Color.DarkGray;
+            table_head_font = new Font("Arial", 16, FontStyle.Bold);
+            table_head_color = System.Drawing.Color.DarkBlue;
             table_brush = new SolidBrush(subtitle_color);
+            table_head_brush = new SolidBrush(table_head_color);
 
             //Table Lines
             tableLine_color = System.Drawing.Color.Black;
@@ -168,20 +172,20 @@ namespace CS_Lab6
         {
             //Display data in table (Year and revenue)
             Graphics g = this.CreateGraphics();
-            var X_axisForYears = 1090;
-            var X_axisForRevenue = X_axisForYears + 130;
-            int h = 150;
+            var X_axisForYears = 1080;
+            var X_axisForRevenue = X_axisForYears + 110;
+            int h = 155;
 
             table_point1 = new PointF(X_axisForYears, h);
-            table_point2 = new PointF(X_axisForRevenue - 20, h);
-            g.DrawString(yearStr, table_font, table_brush, table_point1);
-            g.DrawString(revenueStr, table_font, table_brush, table_point2);
+            table_point2 = new PointF(X_axisForRevenue, h);
+            g.DrawString(yearStr, table_head_font, table_head_brush, table_point1);
+            g.DrawString(revenueStr, table_head_font, table_head_brush, table_point2);
 
             for (int i = 0; i < years.Length; i++)
             {
                 h += 50;
-                table_point1 = new PointF(X_axisForYears, h);
-                table_point2 = new PointF(X_axisForRevenue, h);
+                table_point1 = new PointF(X_axisForYears + 7, h);
+                table_point2 = new PointF(X_axisForRevenue + 25, h);
 
                 string strYear = years[i].ToString();
                 g.DrawString(strYear, table_font, table_brush, table_point1);
@@ -325,7 +329,9 @@ namespace CS_Lab6
             if (e.Button == MouseButtons.Left)
             {
                 if (e.X > 200 && e.X < 640 && e.Y > 315 && e.Y < 500)
+                {
                     MessageBox.Show("Revenue = " + (599 - e.Y).ToString());
+                }
             }
         }
 
@@ -471,6 +477,14 @@ namespace CS_Lab6
             GraphHatch = HatchStyle.Cross;
             graph2ndBrush = new HatchBrush(GraphHatch, System.Drawing.Color.Aqua, barChart_color);
             Invalidate();
+        }
+
+        private void Form1_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.X > 200 && e.X < 640 && e.Y > 315 && e.Y < 500)
+            {
+                RevenueValue.Text = "Revenue = " + (599 - e.Y).ToString();
+            }
         }
     }
 }
